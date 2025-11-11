@@ -100,7 +100,7 @@ def main():
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        print(f"Unexpected error: {e}", file=sys.stderr)  # Fixed typo: strderr -> stderr
+        print(f"Unexpected error: {e}", file=sys.stderr)  
         sys.exit(1)
 
 if __name__ == "__main__":

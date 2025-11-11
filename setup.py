@@ -1,7 +1,21 @@
 from setuptools import setup, find_packages
+import os
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+# Read README.md
+readme_path = os.path.join(os.path.dirname(__file__), "README.md")
+if os.path.exists(readme_path):
+    with open(readme_path, "r", encoding="utf-8") as fh:
+        long_description = fh.read()
+else:
+    long_description = "A CLI tool to optimize prompts using Google Generative AI"
+
+# Read requirements.txt
+requirements_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
+if os.path.exists(requirements_path):
+    with open(requirements_path, "r", encoding="utf-8") as fh:
+        requirements = fh.read().splitlines()
+else:
+    requirements = ["google-generativeai>=0.5.0"]
 
 setup(
     name="prompt-optimizer",
@@ -11,26 +25,18 @@ setup(
     description="A CLI tool to optimize prompts using Google Generative AI",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/prompt-optimizer",
+    url="https://github.com/Dushmilan/prompt-optimizer",
     packages=find_packages(),
     classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
+        "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
     ],
-    python_requires=">=3.7",
-    install_requires=[
-        "google-generativeai>=0.5.0",
-    ],
+    python_requires=">=3.6",
+    install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "prompt-optimizer=PromptOptimizer:main",
+            "prompt-optimizer=prompt_optimizer.optimizer:main",
         ],
     },
 )
