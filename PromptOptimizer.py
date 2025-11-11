@@ -4,9 +4,16 @@ import sys
 
 class PromptOptimizer:
     """
-    Class to Optimize a Prompt
+    Class to Optimize a Prompt using Google's Generative AI
     """
     def __init__(self, Prompt: str, api_key: str = None):
+        """Initialize the PromptOptimizer
+        
+        Args:
+            prompt (str): The prompt to optimize
+            api_key (str): Google Generative AI API key
+        """
+
         self.prompt = Prompt
         if api_key:
             ai.configure(api_key=api_key)
@@ -17,6 +24,10 @@ class PromptOptimizer:
     
     def optimize(self, iterations:int):
         """Optimize the prompt through multiple iterations"""
+
+        if iterations<=0:
+            raise ValueError("Iterations must be a positive integer")
+        
         current_prompt = self.prompt
         model_instance = self.get_model()  
 
@@ -42,6 +53,9 @@ class PromptOptimizer:
                             """
             try:
                 response = model_instance.generate_content(optimization_prompt)
+                if not response.text:
+                    print(f"Warning: Empty response in iteration {i+1}")
+                    break
                 current_prompt = response.text.strip()
                 print(f"Iteration {i+1}: {current_prompt}")
             except Exception as e:
@@ -55,12 +69,19 @@ def main():
     parser.add_argument("-i", "--iterations", type=int, default=1, help="Number of optimization iterations")
     parser.add_argument("-k", "--api-key", required=True, help="Google Generative AI API key")
 
-    args = parser.parse_args()
-    optimizer=PromptOptimizer(args.prompt,args.api_key)
-    optimized_prompt= optimizer.optimize(args.iterations)
-    print("\nFinal Optimized Prompt:")
-    print("=" * 50)
-    print(optimized_prompt)
+    try:
+        args = parser.parse_args()
+        optimizer=PromptOptimizer(args.prompt,args.api_key)
+        optimized_prompt= optimizer.optimize(args.iterations)
+        print("\nFinal Optimized Prompt:")
+        print("=" * 50)
+        print(optimized_prompt)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Unexpected error: {e}", file=sys.strderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
