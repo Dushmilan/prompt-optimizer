@@ -4,32 +4,50 @@ import sys
 
 class PromptOptimizer:
     """
-    Class to Optimize a Prompt using Google's Generative AI
-    """
-    def __init__(self, Prompt: str, api_key: str = None):
-        """Initialize the PromptOptimizer
-        
-        Args:
+    Class to optimize a prompt using Google's Generative AI.
+
+    Attributes:
             prompt (str): The prompt to optimize
             api_key (str): Google Generative AI API key
         """
 
-        self.prompt = Prompt
+    def __init__(self, prompt: str, api_key: str = None):
+        """Initialize the PromptOptimizer
+
+        Args:
+            prompt (str): The prompt to optimize
+            api_key (str, optional): Google Generative AI API key
+                            """
+        self.prompt = prompt
+        self.api_key = api_key
         if api_key:
             ai.configure(api_key=api_key)
 
     def get_model(self):
-        """Initializes and return the generative model"""
-        return ai.GenerativeModel('gemini-2.5-flash')
-    
-    def optimize(self, iterations:int):
-        """Optimize the prompt through multiple iterations"""
+        """Initializes and returns the generative model
 
-        if iterations<=0:
+        Returns:
+            ai.GenerativeModel: The configured generative model
+        """
+        return ai.GenerativeModel('gemini-2.5-flash')
+
+    def optimize(self, iterations: int) -> str:
+        """Optimize the prompt through multiple iterations
+
+        Args:
+            iterations (int): Number of optimization iterations
+
+        Returns:
+            str: The optimized prompt
+
+        Raises:
+            ValueError: If iterations is not a positive integer
+        """
+        if iterations <= 0:
             raise ValueError("Iterations must be a positive integer")
-        
+
         current_prompt = self.prompt
-        model_instance = self.get_model()  
+        model_instance = self.get_model()
 
         for i in range(iterations):
             optimization_prompt = f"""
@@ -59,20 +77,22 @@ class PromptOptimizer:
                 current_prompt = response.text.strip()
                 print(f"Iteration {i+1}: {current_prompt}")
             except Exception as e:
-                print(f"Error in iteration {i+1}: {e}")
-                break
+                        print(f"Error in iteration {i+1}: {e}")
+                        break
         return current_prompt
-    
+
 def main():
-    parser=argparse.ArgumentParser(description='Optimize prompts using AI')
+    parser = argparse.ArgumentParser(description='Optimize prompts using AI')
     parser.add_argument("prompt", help="The prompt to optimize")
-    parser.add_argument("-i", "--iterations", type=int, default=1, help="Number of optimization iterations")
-    parser.add_argument("-k", "--api-key", required=True, help="Google Generative AI API key")
+    parser.add_argument("-i", "--iterations", type=int, default=1,
+                       help="Number of optimization iterations")
+    parser.add_argument("-k", "--api-key", required=True,
+                       help="Google Generative AI API key")
 
     try:
         args = parser.parse_args()
-        optimizer=PromptOptimizer(args.prompt,args.api_key)
-        optimized_prompt= optimizer.optimize(args.iterations)
+        optimizer = PromptOptimizer(args.prompt, args.api_key)
+        optimized_prompt = optimizer.optimize(args.iterations)
         print("\nFinal Optimized Prompt:")
         print("=" * 50)
         print(optimized_prompt)
@@ -80,8 +100,10 @@ def main():
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        print(f"Unexpected error: {e}", file=sys.strderr)
+        print(f"Unexpected error: {e}", file=sys.stderr)  # Fixed typo: strderr -> stderr
         sys.exit(1)
 
 if __name__ == "__main__":
     main()
+
+
